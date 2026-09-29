@@ -1,0 +1,14 @@
+{
+  "name": "komova-marketplace",
+  "description": "Komova's official plugin for project work and human handoffs.",
+  "owner": {
+    "name": "Komova"
+  },
+  "plugins": [
+    {
+      "name": "komova",
+      "source": "./plugins/komova",
+      "description": "Work with Komova projects, items, feedback, and human handoffs through its official MCP server."
+    }
+  ]
+}
