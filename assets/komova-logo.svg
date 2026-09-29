@@ -1,0 +1,8 @@
+<?xml version='1.0' encoding='utf-8'?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024" role="img" aria-labelledby="title desc">
+  <title id="title">komova — Anillo abierto, claro</title>
+  <desc id="desc">Un anillo abierto y un punto que marca el estado actual.</desc>
+  <rect width="1024" height="1024" fill="#F6F5F1" />
+  <path d="M 726 692 A 280 280 0 1 1 726 332" fill="none" stroke="#176B58" stroke-width="124" stroke-linecap="round" />
+  <circle cx="794" cy="512" r="67" fill="#176B58" />
+</svg>
