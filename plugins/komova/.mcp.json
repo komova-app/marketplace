@@ -2,7 +2,7 @@
   "mcpServers": {
     "komova": {
       "type": "http",
-      "url": "https://komova-api.eigen.cl/mcp"
+      "url": "https://api.komova.app/mcp"
     }
   }
 }

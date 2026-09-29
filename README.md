@@ -2,7 +2,7 @@
 
 ![Komova](assets/komova-logo.svg)
 
-This repository distributes the Komova plugin for Claude. It connects to the official remote MCP endpoint at `https://komova-api.eigen.cl/mcp`. Authentication uses Komova's OAuth flow; the repository contains no account credentials.
+This repository distributes the Komova plugin for Claude. It connects to the official remote MCP endpoint at `https://api.komova.app/mcp`. Authentication uses Komova's OAuth flow; the repository contains no account credentials. After the domain migration, reconnect existing Claude installations to authorize the new resource URL.
 
 ## Claude Chat
 
