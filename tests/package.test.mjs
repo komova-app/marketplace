@@ -30,16 +30,15 @@ test('the published skill has self-contained product references', () => {
   assert.doesNotMatch(body, /(?:15.minute tick|coordinator tick|Project Manager|one active agent Item per Project)/i);
 });
 
-test('first use separates client setup, read verification, and an approved write', () => {
+test('plugin onboarding includes the skill and keeps account authorization separate', () => {
   const readme = read('README.md');
   const skillBody = read('plugins/komova/skills/komova-work/SKILL.md');
-  assert.match(readme, /Claude Chat[^\n]*conector/i);
-  assert.match(readme, /ChatGPT[^\n]*app MCP/i);
-  assert.match(readme, /list_projects/);
-  assert.match(readme, /get_project/);
-  assert.match(readme, /add_item/);
-  assert.match(readme, /sin crear ni modificar/i);
-  assert.match(readme, /lista vacía/i);
+  assert.match(readme, /https:\/\/github\.com\/komova-app\/marketplace/);
+  assert.match(readme, /plugins\/komova\/skills\/komova-work\/SKILL\.md/);
+  assert.match(readme, /OAuth/);
+  for (const tool of ['list_projects', 'get_project', 'add_item']) {
+    assert.match(skillBody, new RegExp(`\\b${tool}\\b`));
+  }
   assert.match(skillBody, /First use/i);
   assert.match(skillBody, /authorization/i);
   assert.match(skillBody, /UUID/);

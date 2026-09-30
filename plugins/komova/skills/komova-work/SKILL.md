@@ -5,7 +5,7 @@ description: Understand Komova's Projects, Items, Forms, Feed, and MCP tools; re
 
 # Komova product and MCP
 
-Komova keeps a person's Projects, Items, Entries, Feedback, Forms, and recent changes together. Connect the remote MCP at `https://api.komova.app/mcp` and complete Komova's OAuth flow with that person's own account. Installing this GitHub plugin and creating a ChatGPT custom app are separate paths; neither installation alone grants access or write permission. Never ask someone to paste a password, token, authorization code, or payment details into chat or a Form.
+Komova keeps a person's Projects, Items, Entries, Feedback, Forms, and recent changes together. Install the Komova plugin from its marketplace to get both this skill and the bundled remote MCP connection at `https://api.komova.app/mcp`; adding a custom MCP connector alone does not install the skill. Complete the bundled connection's OAuth flow with that person's own account; installation alone grants neither account access nor write permission. Never ask someone to paste a password, token, authorization code, or payment details into chat or a Form.
 
 ## First use and authorization
 

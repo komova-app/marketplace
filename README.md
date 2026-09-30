@@ -1,53 +1,48 @@
-# Komova para Claude y ChatGPT
+# Komova plugin
 
-![Símbolo de Komova](assets/komova-logo.svg)
+Bring your Komova projects into conversations with Claude or OpenAI. The plugin lets your assistant read Projects and Items, make requested changes, ask for structured answers through Forms, and record results in Feed. You can see the same work in Komova, including who owns the next action and what it depends on.
 
-Komova muestra en el teléfono el trabajo que una persona y sus agentes llevan en común. Un **Project** reúne un objetivo; un **Item** deja clara la próxima acción, su responsable y sus requisitos. Los Forms piden respuestas concretas al titular. Las Entries y los Reminders aparecen en Feed para contar resultados o señalar algo que requiere atención.
+This marketplace packages **two parts together**: Komova's remote MCP connection and the **`komova-work` skill**, with references explaining the tools and how their results appear in the app. Install the plugin to get both. Adding the MCP URL as a custom connector alone does not install the skill.
 
-**MCP remoto oficial:** `https://api.komova.app/mcp`. Cada persona conecta su propia cuenta mediante OAuth. El paquete no contiene credenciales ni da acceso a los datos por sí solo.
+You need a Komova account. After installation, authorize the bundled connection through OAuth with your own account. Installation alone does not grant access to your data.
 
-## Conectar y autorizar
+## Install in Claude
 
-Elige **una** ruta según el chat que usarás. Necesitas una cuenta de Komova; iniciarás sesión durante OAuth si hace falta. La instalación, la autorización de esa cuenta y la activación del conector en un chat son pasos diferentes.
+1. Open **Customize → Plugins → Add → Add marketplace → Add from a repository**.
+2. Enter `https://github.com/komova-app/marketplace` and add the marketplace.
+3. In **Discover**, find **Komova** and select **Add**.
+4. Authorize the bundled Komova connector through OAuth. Confirm the plugin is installed, its skill appears in the **`/` menu**, and its connector is enabled in your conversation.
 
-### Claude Chat: conector remoto
+See [Claude's plugin installation guide](https://support.claude.com/en/articles/13837440-use-plugins-in-claude).
 
-En Claude web o Desktop, abre **Customize → Connectors → + → Add custom connector**. Indica el nombre `Komova` y `https://api.komova.app/mcp`, pulsa **Connect** y completa OAuth con tu cuenta de Komova. En Team/Enterprise, un Owner agrega primero el conector en **Organization settings → Connectors → Add → Custom → Web**; luego cada miembro autoriza su propia cuenta. En la conversación donde vas a probarlo, comprueba que Komova esté habilitado en **+ → Connectors**. [Guía de Claude](https://support.claude.com/en/articles/11175166-get-started-with-custom-connectors-using-remote-mcp).
+## Install in OpenAI
 
-El [plugin de este repositorio](#instalar-el-plugin-desde-este-marketplace) agrega la guía de uso. Si lo instalas, confirma igualmente que el conector remoto esté disponible, autorizado y habilitado en esa conversación.
+For a managed ChatGPT workspace, an administrator opens **Admin → Plugins → Add → Import marketplace**, sets the source to `https://github.com/komova-app/marketplace`, leaves **Path** empty, and imports it. Users then open **Plugins Directory**, select their workspace tab, install **Komova**, and authorize its bundled connection. Start a new conversation with the plugin enabled.
 
-### ChatGPT: app MCP personalizada
+This repository's bundled MCP configuration requires the **ChatGPT desktop app**; a web-only custom connector does not install the skill. Workspace permissions may control availability. See [OpenAI's plugin management guide](https://learn.chatgpt.com/docs/enterprise/plugin-management).
 
-En ChatGPT web, un workspace con **developer mode** y permisos para crear apps MCP puede abrir **Settings → Apps → Create** o **Workspace settings → Apps → Create**. Registra `https://api.komova.app/mcp`, selecciona OAuth, completa la autorización cuando aparezca y espera a que termine **Scan Tools** antes de crear la app. Abre un chat nuevo y selecciona esa app de prueba desde el menú de herramientas. La ruta y los permisos dependen del plan y del workspace; una app en borrador no equivale a una publicación para todos los miembros. [Guía de OpenAI](https://help.openai.com/en/articles/12584461-developer-mode-and-mcp-apps-in-chatgpt).
+For Codex, add the marketplace with `codex plugin marketplace add komova-app/marketplace`, then install Komova from **Plugins Directory** in the Codex app. See [OpenAI's plugin documentation](https://developers.openai.com/plugins/build/plugins). Installation and successful Komova OAuth authorization are separate checks.
 
-## Primera prueba: leer, luego escribir con aprobación
+## Try it
 
-1. En el chat con Komova habilitado, pide: «Usa `list_projects` de Komova y muéstrame los nombres y UUID de mis Projects, sin crear ni modificar nada». Si aparece tu Project, pide `get_project` con su UUID. Un título puede repetirse, por eso las operaciones posteriores usan el ID. Una lista vacía puede significar que esa cuenta aún no tiene Projects: compruébalo en la app; si está vacía allí también, crea un Project en la app y repite esta lectura.
-2. Solo si quieres probar una escritura, elige un Project y pide: «Antes de crear nada, revisa sus Items. Propón un Item pequeño asignado a mí, con título y descripción, y espera mi aprobación». Tras aprobar, el agente usa `add_item` con `project_id`, `title`, `description` y `assigned_to_kind="human"`. Compara el UUID devuelto con `get_item` y con List o Project en la app. Una respuesta del chat sin el Item en Komova no confirma la escritura.
+Start with a read:
 
-Si no aparecen herramientas en el primer turno de un chat nuevo, vuelve a pedir la lectura una vez; después revisa que el conector o app esté habilitado en **ese chat** y que el escaneo haya terminado. El cliente puede pedir permiso para ejecutar `list_projects` aunque OAuth ya esté completo. Si OAuth vuelve a pedir acceso o muestra otra cuenta, conecta de nuevo con la cuenta de Komova correcta. Si tenías una conexión al host anterior, vuelve a autorizar el recurso `api.komova.app`. Evita repetir `add_item` tras un resultado incierto: primero busca el Item por Project y UUID para no duplicarlo.
+> Use Komova to list my Projects with their IDs. Do not create or change anything.
 
-## Qué herramienta usar
+Then select a Project:
 
-| Necesidad | Herramientas principales | Dónde se ve |
-| --- | --- | --- |
-| Encontrar un objetivo y su trabajo | `list_projects`, `get_project`, `list_project_items`, `get_item` | Projects y List; el detalle del Item muestra responsable, requisitos y Forms. |
-| Registrar una acción aprobada | `add_item`, `change_item`, `set_item_dependencies` | List y Project. La espera por un requisito se calcula sin sustituir el estado real del Item. |
-| Pedir una respuesta estructurada | `request_information`, `request_human_action`, `get_information_request` | Form del Item humano; una respuesta guardada en borrador local todavía no llega al agente. |
-| Contar un avance duradero | `add_report`, `change_report`, `get_report` | Entry en Feed y su detalle completo; las fuentes HTTPS van separadas del relato. |
-| Señalar algo breve ahora | `add_reminder`, `get_reminder` | Tarjeta inmediata en Feed que abre un Project, Item o Entry exacto. No es un programador. |
-| Atender una observación del titular | `list_feedback`, `get_feedback`, `acknowledge_feedback`, `resolve_feedback` | Feedback ligado al Project, Item o Entry; leerlo no equivale a resolverlo. |
+> Read this Project and its Items. Explain who owns each next action and which prerequisites remain unfinished.
 
-La [skill Komova](plugins/komova/skills/komova-work/SKILL.md) contiene el [modelo de la app](plugins/komova/skills/komova-work/references/app-model.md), la [referencia de las 37 herramientas](plugins/komova/skills/komova-work/references/tools.md) con parámetros y validaciones, y la [guía para escribir en Feed](plugins/komova/skills/komova-work/references/feed.md). El servidor también publica guías vivas mediante `get_komova_guide`; consúltalas cuando una firma o un comportamiento haya cambiado.
+To try a change:
 
-## Instalar el plugin desde este marketplace
+> Check this Project's existing Items, then propose one small Item assigned to me. Wait for my approval before creating it.
 
-En Claude Chat, abre **Customize → Plugins → Add → Add marketplace → Add from a repository**. Introduce `https://github.com/komova-app/marketplace`, agrega **komova** desde Discover y completa la conexión. El manifiesto apunta al MCP remoto oficial. La instalación del plugin y la autorización OAuth son pasos distintos. [Instalar marketplaces en Claude](https://support.claude.com/en/articles/13837440-use-plugins-in-claude).
+After an approved write, ask the assistant to read the result by ID and confirm it appears in Komova. If a call has an uncertain result, check existing records before retrying to avoid duplicates.
 
-Claude Code puede instalar el paquete con `/plugin marketplace add komova-app/marketplace` y `/plugin install komova@komova-marketplace`. Su cliente y callback OAuth son distintos de Claude Chat y aún no están habilitados en el API de Komova; no uses esa ruta como prueba de conexión hasta que se verifique. [Marketplace de Claude Code](https://code.claude.com/docs/en/plugin-marketplaces).
+## Learn the tools
 
-En un workspace OpenAI, un administrador puede importar este repositorio desde **Workspace settings → Plugins → Add → Import marketplace** y sincronizarlo después desde **Plugins → Marketplaces → Komova → Sync now**. Ese plugin de GitHub y una app MCP personalizada de ChatGPT son registros distintos: importar o sincronizar el primero no crea ni actualiza la segunda. Un plugin con `.mcp.json` puede figurar como **Desktop only**; para ChatGPT web usa la app MCP directa de arriba. [Importación de marketplaces](https://help.openai.com/en/articles/20001504-importing-and-syncing-plugin-marketplaces-from-github).
+- [App model](plugins/komova/skills/komova-work/references/app-model.md): Projects, Items, Forms, and what appears in List and Feed.
+- [Tool reference](plugins/komova/skills/komova-work/references/tools.md): supported calls, inputs, and effects.
+- [Feed guide](plugins/komova/skills/komova-work/references/feed.md): Entries, Reminders, and sources.
 
-Si una app de ChatGPT conserva herramientas antiguas, revisa sus acciones en la administración de Apps: Enterprise/Edu ofrece **Action control → Refresh**; en Business puede requerirse recrear y publicar de nuevo una app ya publicada. Confirma después el catálogo y los permisos efectivos. [Actualización de apps MCP](https://help.openai.com/en/articles/12584461-developer-mode-and-mcp-apps-in-chatgpt).
-
-Se comprobaron lecturas y una escritura controlada sobre un Item ya activo desde Claude Chat y ChatGPT conectados a `api.komova.app`. Ambas conexiones siguieron funcionando horas después de autorizar sin repetir el login; el intercambio del refresh token y la revocación requieren pruebas separadas. Nunca pegues contraseñas, tokens ni códigos OAuth en un chat o Form.
+The [bundled skill](plugins/komova/skills/komova-work/SKILL.md) connects these references. For current server behavior, ask the assistant to call `get_komova_guide`. Never paste passwords, tokens, or OAuth codes into a conversation or Form.
