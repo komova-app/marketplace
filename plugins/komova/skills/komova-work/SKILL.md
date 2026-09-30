@@ -7,6 +7,12 @@ description: Understand Komova's Projects, Items, Forms, Feed, and MCP tools; re
 
 Komova keeps a person's Projects, Items, Entries, Feedback, Forms, and recent changes together. Connect the remote MCP at `https://api.komova.app/mcp` and complete Komova's OAuth flow with that person's own account. Installing this GitHub plugin and creating a ChatGPT custom app are separate paths; neither installation alone grants access or write permission. Never ask someone to paste a password, token, authorization code, or payment details into chat or a Form.
 
+## First use and authorization
+
+For a first read, confirm the Komova connector or app is enabled in this conversation. Call `list_projects` without creating or changing anything, show Project names with UUIDs, then use `get_project(project_id)` for the Project the person selects. An empty list can be a valid empty account; ask the person to check the same account in Komova before treating it as an OAuth failure. If no Komova tools are available, guide them to enable the connector or app in the current chat and complete its own OAuth authorization. Do not claim a successful connection from plugin installation, a tool scan, or a chat answer alone.
+
+For the first approved write, inspect existing Items in the selected Project before `add_item`. Explain the proposed title, assignee, and Project, then wait for the person's approval. After the call, read the returned Item by UUID and ask the person to confirm it appears in List or Project. If creation has an uncertain outcome, search current Items before retrying.
+
 ## Find the right record
 
 1. Use `list_projects` to find a Project the person owns, then `get_project(project_id)` for its current goal and status. Record IDs are UUIDs; titles can repeat.

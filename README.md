@@ -6,16 +6,26 @@ Komova muestra en el teléfono el trabajo que una persona y sus agentes llevan e
 
 **MCP remoto oficial:** `https://api.komova.app/mcp`. Cada persona conecta su propia cuenta mediante OAuth. El paquete no contiene credenciales ni da acceso a los datos por sí solo.
 
-## Primer recorrido
+## Conectar y autorizar
 
-1. Conecta el MCP por una de las rutas siguientes y autoriza tu propia cuenta de Komova. Si tenías una conexión al host anterior, vuelve a autorizar el recurso nuevo.
-2. Pide «Muéstrame mis Projects de Komova» y abre uno por su UUID. Debe aparecer un Project propio; el título no es un identificador único.
-3. Cuando quieras probar una escritura, pide un Item pequeño en ese Project, revisa la acción que el cliente propone y apruébala. Comprueba en la app el UUID, el título, el Project y el responsable del Item. Una respuesta del chat sin el Item en Komova no confirma la escritura.
+Elige **una** ruta según el chat que usarás. Necesitas una cuenta de Komova; iniciarás sesión durante OAuth si hace falta. La instalación, la autorización de esa cuenta y la activación del conector en un chat son pasos diferentes.
 
-| Cliente | Cómo conectar |
-| --- | --- |
-| Claude Chat web o Desktop | En Pro/Max: **Customize → Connectors → + → Add custom connector**. Nombre `Komova`, URL `https://api.komova.app/mcp`; pulsa **Connect** y completa OAuth. En Team/Enterprise, un Owner agrega primero la URL en **Organization settings → Connectors → Add → Custom → Web** y cada miembro conecta su propia cuenta. [Guía de Claude](https://support.claude.com/en/articles/11175166-get-started-with-custom-connectors-using-remote-mcp). |
-| ChatGPT web con apps MCP personalizadas habilitadas | Con developer mode, usa **Settings → Apps → Create** o **Workspace settings → Apps → Create**, registra `https://api.komova.app/mcp`, selecciona OAuth y ejecuta **Scan Tools**. La ruta y los permisos dependen del plan y del workspace. [Guía de OpenAI](https://help.openai.com/en/articles/12584461-developer-mode-and-mcp-apps-in-chatgpt). |
+### Claude Chat: conector remoto
+
+En Claude web o Desktop, abre **Customize → Connectors → + → Add custom connector**. Indica el nombre `Komova` y `https://api.komova.app/mcp`, pulsa **Connect** y completa OAuth con tu cuenta de Komova. En Team/Enterprise, un Owner agrega primero el conector en **Organization settings → Connectors → Add → Custom → Web**; luego cada miembro autoriza su propia cuenta. En la conversación donde vas a probarlo, comprueba que Komova esté habilitado en **+ → Connectors**. [Guía de Claude](https://support.claude.com/en/articles/11175166-get-started-with-custom-connectors-using-remote-mcp).
+
+El [plugin de este repositorio](#instalar-el-plugin-desde-este-marketplace) agrega la guía de uso. Si lo instalas, confirma igualmente que el conector remoto esté disponible, autorizado y habilitado en esa conversación.
+
+### ChatGPT: app MCP personalizada
+
+En ChatGPT web, un workspace con **developer mode** y permisos para crear apps MCP puede abrir **Settings → Apps → Create** o **Workspace settings → Apps → Create**. Registra `https://api.komova.app/mcp`, selecciona OAuth, completa la autorización cuando aparezca y espera a que termine **Scan Tools** antes de crear la app. Abre un chat nuevo y selecciona esa app de prueba desde el menú de herramientas. La ruta y los permisos dependen del plan y del workspace; una app en borrador no equivale a una publicación para todos los miembros. [Guía de OpenAI](https://help.openai.com/en/articles/12584461-developer-mode-and-mcp-apps-in-chatgpt).
+
+## Primera prueba: leer, luego escribir con aprobación
+
+1. En el chat con Komova habilitado, pide: «Usa `list_projects` de Komova y muéstrame los nombres y UUID de mis Projects, sin crear ni modificar nada». Si aparece tu Project, pide `get_project` con su UUID. Un título puede repetirse, por eso las operaciones posteriores usan el ID. Una lista vacía puede significar que esa cuenta aún no tiene Projects: compruébalo en la app; si está vacía allí también, crea un Project en la app y repite esta lectura.
+2. Solo si quieres probar una escritura, elige un Project y pide: «Antes de crear nada, revisa sus Items. Propón un Item pequeño asignado a mí, con título y descripción, y espera mi aprobación». Tras aprobar, el agente usa `add_item` con `project_id`, `title`, `description` y `assigned_to_kind="human"`. Compara el UUID devuelto con `get_item` y con List o Project en la app. Una respuesta del chat sin el Item en Komova no confirma la escritura.
+
+Si no aparecen herramientas en el primer turno de un chat nuevo, vuelve a pedir la lectura una vez; después revisa que el conector o app esté habilitado en **ese chat** y que el escaneo haya terminado. El cliente puede pedir permiso para ejecutar `list_projects` aunque OAuth ya esté completo. Si OAuth vuelve a pedir acceso o muestra otra cuenta, conecta de nuevo con la cuenta de Komova correcta. Si tenías una conexión al host anterior, vuelve a autorizar el recurso `api.komova.app`. Evita repetir `add_item` tras un resultado incierto: primero busca el Item por Project y UUID para no duplicarlo.
 
 ## Qué herramienta usar
 
