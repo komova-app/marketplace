@@ -25,7 +25,7 @@ Un administrador puede usar **Workspace settings → Plugins → Add → Import 
 
 ## Criterios antes de invitar a un tester
 
-1. Confirmar que el cliente muestra el endpoint exacto `https://api.komova.app/mcp` y el símbolo de Komova. Si aparece la marca anterior, reconectar al endpoint nuevo y registrar cliente, versión y captura sin credenciales si persiste.
+1. Confirmar que el cliente usa el endpoint exacto `https://api.komova.app/mcp`. Un conector personalizado de Claude puede mostrar una K genérica; ese ícono no demuestra que el host sea incorrecto. Si aparece la marca anterior, reconectar al endpoint nuevo y registrar cliente, versión y captura sin credenciales si persiste. Una ficha del directorio de Claude puede aportar la marca visual; este marketplace no tiene un campo de ícono documentado.
 2. Autorizar con una cuenta de ensayo propia y comprobar una lectura de su Project sin mostrar datos de otra cuenta.
 3. Crear un Item ficticio solo tras aprobar la escritura solicitada por el cliente y comprobar en Komova su título, Project y responsable. Al diagnosticar un duplicado, comparar los UUID desde el cliente o API antes de atribuirlo a la interfaz.
 4. Verificar por separado renovación y revocación de la conexión. Una instalación del plugin, una lectura del dueño o una captura de simulador no sustituye el recorrido real del tester.
