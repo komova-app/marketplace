@@ -1,6 +1,6 @@
 {
   "name": "komova-marketplace",
-  "description": "Komova's official plugin for project work and human handoffs.",
+  "description": "Komova's MCP connection and practical guide to Projects, Items, Forms, Feed, and Feedback.",
   "owner": {
     "name": "Komova"
   },
@@ -8,7 +8,7 @@
     {
       "name": "komova",
       "source": "./plugins/komova",
-      "description": "Work with Komova projects, items, feedback, and human handoffs through its official MCP server."
+      "description": "Connect to Komova and learn when to use each MCP tool and how its results appear in the app."
     }
   ]
 }

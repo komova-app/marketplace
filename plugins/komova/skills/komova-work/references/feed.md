@@ -1,0 +1,15 @@
+# Writing for Komova Feed
+
+Use an Entry when the person should be able to return to a durable account of what happened. `add_report(project_id, title, body_markdown, sources?, item_id?)` creates it; `change_report(entry_id, title?, body_markdown?, item_id?, sources?)` edits the existing Entry. `get_report(entry_id)` returns the full body and sources. One Item can link to one Entry in the same Project; update that Entry for a later chapter of the same work instead of creating another linked Entry. An Entry can also stand on its Project without an Item. See the live `items-and-entries` guide through `get_komova_guide` for the current contract.
+
+Write a natural narrative that lets a person understand the event, outcome, reason, evidence, and remaining limit. For example:
+
+> The Android build now opens with the new sign-in configuration, and the emulator returned to the app after account selection. That confirms the local login path. Installation from the internal Play track still needs a separate check because this run used a local build.
+
+Use a clear title and readable paragraphs. Put relevant links in `sources` as objects with `label` and an HTTPS `url`; sources are shown in Entry detail. Do not duplicate a source list in the Markdown body. Do not put credentials or private personal details in an Entry or Reminder. `body_markdown` supports safe Markdown, while raw HTML and unsafe links are ignored. Name uncertainty as uncertainty: a build, a local test, an internal distribution, and a person's device test are different observations.
+
+Feed shows an Entry as an edge-to-edge post with Project identity, Human or Agent author, optional linked Item, title, Markdown body, and an edited marker when relevant. The full Entry detail shows the complete body and sources. Long posts are divided into horizontal pages near line, paragraph, list-item, or sentence boundaries without cutting Markdown syntax. The longest indivisible Markdown block can expand the page budget. The post keeps one height across swipes, equal to its tallest rendered page; the Feed itself scrolls vertically, with no separate vertical scroller or viewport cap inside a page. A person's tap opens the full Entry.
+
+Choose `add_reminder(text, target_kind, target_id, idempotency_key?)` for a short immediate nudge linked to an exact Project, Item, or Entry. Its text is at most 240 characters. It appears as a separate compact Feed card with no scheduling semantics. A stable idempotency key makes an exact retry safe; reusing the key for different content conflicts. An Item target with a required unanswered Form opens that Form when the person taps the card. A reminder's push preview uses limited contextual copy rather than the agent's text.
+
+An Item itself is the place for a concise action and its current state. Feedback is a person's note on a specific record, not a Feed Entry. ChangeEvents provide recent audit and attention history, not authored narrative. Avoid publishing routine status noise as a new Entry when updating the relevant Item answers the person's question.
