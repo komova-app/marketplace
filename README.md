@@ -46,3 +46,5 @@ After an approved write, ask the assistant to read the result by ID and confirm 
 - [Feed guide](plugins/komova/skills/komova-work/references/feed.md): Entries, Reminders, and sources.
 
 The [bundled skill](plugins/komova/skills/komova-work/SKILL.md) connects these references. For current server behavior, ask the assistant to call `get_komova_guide`. Never paste passwords, tokens, or OAuth codes into a conversation or Form.
+
+Version 0.2.1 documents 38 tools, including `get_form_attachment` for saved Form evidence. This package does not automatically update an installed connector or its server. An existing 37-tool connector may need its catalog refreshed after the server update; check the tools available in that conversation before requesting attachment content. The app handles file uploads and storage quota in Forms and Settings.

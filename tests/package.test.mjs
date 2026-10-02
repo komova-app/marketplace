@@ -69,7 +69,7 @@ test('the packaged tool reference covers the exported API catalog and input name
     assert.ok(!rows.has(match[1]), `duplicate tool ${match[1]}`);
     rows.set(match[1], match[2]);
   }
-  assert.equal(rows.size, 37, 'the current public MCP exposes 37 tools');
+  assert.equal(rows.size, 38, 'the package documents the 38-tool API contract');
 
   const api = path.resolve(repo, '../api/app');
   if (!fs.existsSync(path.join(api, 'mcp_server.py'))) {
@@ -78,7 +78,7 @@ test('the packaged tool reference covers the exported API catalog and input name
   }
   const source = ['mcp_server.py', 'mcp_guides.py'].map(file => fs.readFileSync(path.join(api, file), 'utf8')).join('\n');
   const functions = [...source.matchAll(/@mcp\.tool\([^\n]*\)\n\s*(?:async )?def ([a-z_]+)\(([\s\S]*?)\)\s*->/g)];
-  assert.equal(functions.length, 37, 'source catalog changed; update the package deliberately');
+  assert.equal(functions.length, 38, 'source catalog changed; update the package deliberately');
   assert.deepEqual([...rows.keys()].sort(), functions.map(match => match[1]).sort());
   for (const [, name, signature] of functions) {
     const params = [...signature.matchAll(/(?:^|,\s*)([a-z_]+):/g)].map(match => match[1]);
@@ -86,6 +86,24 @@ test('the packaged tool reference covers the exported API catalog and input name
       assert.match(rows.get(name), new RegExp(`\\b${param}\\b`), `${name} is missing parameter ${param}`);
     }
   }
+});
+
+test('saved Form evidence is a private read and does not expose drafts or owner writes', () => {
+  const tools = read('plugins/komova/skills/komova-work/references/tools.md');
+  const model = read('plugins/komova/skills/komova-work/references/app-model.md');
+  const readme = read('README.md');
+  const row = tools.match(/^\| `get_form_attachment` \| ([^\n]*)$/m)?.[1];
+  assert.ok(row, 'saved attachment tool must be documented');
+  for (const word of ['attachment_id', 'PNG', 'JPEG', 'PDF', 'drafts', 'untrusted']) {
+    assert.match(row, new RegExp(`\\b${word}\\b`));
+  }
+  assert.match(model, /Save answers.*attachments/i);
+  assert.match(model, /Settings.*quota/i);
+  assert.match(model, /no public URLs/i);
+  assert.match(model, /deleting.*does not change.*answers.*Item/i);
+  assert.match(readme, /38 tools/);
+  assert.match(readme, /37-tool/);
+  assert.match(readme, /does not.*update.*installed/i);
 });
 
 test('the package keeps internal operations and old origins out of the public guide', () => {
