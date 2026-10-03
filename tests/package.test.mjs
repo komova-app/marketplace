@@ -8,6 +8,8 @@ const repo = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const plugin = path.join(repo, 'plugins/komova');
 const skill = path.join(plugin, 'skills/komova-work');
 const read = relative => fs.readFileSync(path.join(repo, relative), 'utf8');
+const guideKeys = ['getting-started', 'items-and-entries', 'feedback-and-handoffs', 'change-events'];
+const guideDocs = guideKeys.map(key => `plugins/komova/skills/komova-work/references/guides/${key}.md`);
 
 test('the package advertises one canonical remote MCP server', () => {
   const marketplace = JSON.parse(read('.claude-plugin/marketplace.json'));
@@ -36,12 +38,27 @@ test('plugin onboarding includes the skill and keeps account authorization separ
   assert.match(readme, /https:\/\/github\.com\/komova-app\/marketplace/);
   assert.match(readme, /plugins\/komova\/skills\/komova-work\/SKILL\.md/);
   assert.match(readme, /OAuth/);
-  for (const tool of ['list_projects', 'get_project', 'add_item']) {
+  for (const tool of ['get_komova_guide', 'request_human_action']) {
     assert.match(skillBody, new RegExp(`\\b${tool}\\b`));
   }
-  assert.match(skillBody, /First use/i);
+  assert.match(skillBody, /already requested write/i);
   assert.match(skillBody, /authorization/i);
   assert.match(skillBody, /UUID/);
+});
+
+test('one installed plugin contains all English product guides', () => {
+  const headings = ['Komova MCP resources', 'Items and Entries', 'Feedback and human requests', 'ChangeEvents and cursor'];
+  const body = fs.readFileSync(path.join(skill, 'SKILL.md'), 'utf8');
+  for (const [index, key] of guideKeys.entries()) {
+    assert.match(body, new RegExp(`references/guides/${key}\\.md`));
+    const guide = read(guideDocs[index]);
+    assert.ok(guide.startsWith(`# ${headings[index]}\n`));
+    assert.ok(guide.endsWith('\n'));
+    assert.doesNotMatch(guide, /Recursos del MCP|Ítems y|Solicitudes humanas|coordinador global/);
+  }
+  const onboarding = read(guideDocs[0]);
+  assert.match(onboarding, /plugin bundles the `komova-work` skill/);
+  assert.match(onboarding, /raw MCP URL does not install the skill/);
 });
 
 test('relative documentation links resolve within this package', () => {
@@ -51,13 +68,18 @@ test('relative documentation links resolve within this package', () => {
     'plugins/komova/skills/komova-work/references/app-model.md',
     'plugins/komova/skills/komova-work/references/tools.md',
     'plugins/komova/skills/komova-work/references/feed.md',
+    ...guideDocs,
   ];
   for (const doc of docs) {
     const body = read(doc);
     for (const [, target] of body.matchAll(/!?\[[^\]]*\]\(([^)]+)\)/g)) {
       if (/^(?:https?:|#)/.test(target)) continue;
       const pathname = target.split('#')[0];
-      assert.ok(fs.existsSync(path.resolve(repo, path.dirname(doc), pathname)), `${doc} has a broken link: ${target}`);
+      const resolved = path.resolve(repo, path.dirname(doc), pathname);
+      assert.ok(fs.existsSync(resolved), `${doc} has a broken link: ${target}`);
+      if (doc.startsWith('plugins/')) {
+        assert.ok(resolved.startsWith(`${plugin}${path.sep}`), `${doc} escapes the installed plugin: ${target}`);
+      }
     }
   }
 });
@@ -69,7 +91,10 @@ test('the packaged tool reference covers the exported API catalog and input name
     assert.ok(!rows.has(match[1]), `duplicate tool ${match[1]}`);
     rows.set(match[1], match[2]);
   }
-  assert.equal(rows.size, 38, 'the package documents the 38-tool API contract');
+  assert.equal(rows.size, 39, 'the package documents the 39-tool API contract');
+  assert.match(rows.get('delete_project'), /project_id/);
+  assert.match(rows.get('delete_project'), /destructive/i);
+  assert.match(rows.get('delete_project'), /confirm/i);
 
   const api = path.resolve(repo, '../api/app');
   if (!fs.existsSync(path.join(api, 'mcp_server.py'))) {
@@ -78,7 +103,7 @@ test('the packaged tool reference covers the exported API catalog and input name
   }
   const source = ['mcp_server.py', 'mcp_guides.py'].map(file => fs.readFileSync(path.join(api, file), 'utf8')).join('\n');
   const functions = [...source.matchAll(/@mcp\.tool\([^\n]*\)\n\s*(?:async )?def ([a-z_]+)\(([\s\S]*?)\)\s*->/g)];
-  assert.equal(functions.length, 38, 'source catalog changed; update the package deliberately');
+  assert.equal(functions.length, 39, 'source catalog changed; update the package deliberately');
   assert.deepEqual([...rows.keys()].sort(), functions.map(match => match[1]).sort());
   for (const [, name, signature] of functions) {
     const params = [...signature.matchAll(/(?:^|,\s*)([a-z_]+):/g)].map(match => match[1]);
@@ -101,7 +126,7 @@ test('saved Form evidence is a private read and does not expose drafts or owner 
   assert.match(model, /Settings.*quota/i);
   assert.match(model, /no public URLs/i);
   assert.match(model, /deleting.*does not change.*answers.*Item/i);
-  assert.match(readme, /38 tools/);
+  assert.match(readme, /39 tools/);
   assert.match(readme, /37-tool/);
   assert.match(readme, /does not.*update.*installed/i);
 });
@@ -113,6 +138,7 @@ test('the package keeps internal operations and old origins out of the public gu
     'plugins/komova/skills/komova-work/references/app-model.md',
     'plugins/komova/skills/komova-work/references/tools.md',
     'plugins/komova/skills/komova-work/references/feed.md',
+    ...guideDocs,
   ];
   for (const file of files) {
     const body = read(file);
