@@ -25,7 +25,7 @@ test('the package advertises one canonical remote MCP server', () => {
 test('the published skill has self-contained product references', () => {
   const body = fs.readFileSync(path.join(skill, 'SKILL.md'), 'utf8');
   assert.match(body, /^---\nname: komova-work\n/m);
-  for (const reference of ['app-model.md', 'tools.md', 'feed.md']) {
+  for (const reference of ['app-model.md', 'tools.md', 'feed.md', 'clients.md']) {
     assert.match(body, new RegExp(`references/${reference.replace('.', '\\.')}`));
     assert.ok(fs.statSync(path.join(skill, 'references', reference)).isFile());
   }
@@ -68,6 +68,7 @@ test('relative documentation links resolve within this package', () => {
     'plugins/komova/skills/komova-work/references/app-model.md',
     'plugins/komova/skills/komova-work/references/tools.md',
     'plugins/komova/skills/komova-work/references/feed.md',
+    'plugins/komova/skills/komova-work/references/clients.md',
     ...guideDocs,
   ];
   for (const doc of docs) {
@@ -82,6 +83,22 @@ test('relative documentation links resolve within this package', () => {
       }
     }
   }
+});
+
+test('OAuth client guidance is packaged and distinguishes protocol from real login', () => {
+  const clients = read('plugins/komova/skills/komova-work/references/clients.md');
+  for (const client of ['ChatGPT', 'Codex', 'Claude', 'OpenCode', 'Hermes', 'OpenClaw', 'DeepSeek']) {
+    assert.match(clients, new RegExp(`\\b${client}\\b`));
+  }
+  for (const feature of ['PKCE', 'CIMD', 'DCR']) assert.match(clients, new RegExp(`\\b${feature}\\b`));
+  assert.match(clients, /https:\/\/api\.komova\.app\/mcp/);
+  assert.match(clients, /protocol.*(?:tests|coverage)/i);
+  assert.match(clients, /real.*(?:login|authorization)/i);
+  assert.match(clients, /model provider/i);
+  assert.match(clients, /self.declared/i);
+  assert.doesNotMatch(clients, /all clients.*(?:tested|verified)|DeepSeek web.*supported/i);
+  const readme = read('README.md');
+  assert.match(readme, /references\/clients\.md/);
 });
 
 test('the packaged tool reference covers the exported API catalog and input names', t => {
@@ -138,6 +155,7 @@ test('the package keeps internal operations and old origins out of the public gu
     'plugins/komova/skills/komova-work/references/app-model.md',
     'plugins/komova/skills/komova-work/references/tools.md',
     'plugins/komova/skills/komova-work/references/feed.md',
+    'plugins/komova/skills/komova-work/references/clients.md',
     ...guideDocs,
   ];
   for (const file of files) {

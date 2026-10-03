@@ -46,6 +46,7 @@ You can also delete a Project from its app detail or through MCP. Deletion requi
 - [App model](plugins/komova/skills/komova-work/references/app-model.md): Projects, Items, Forms, and what appears in List and Feed.
 - [Tool reference](plugins/komova/skills/komova-work/references/tools.md): supported calls, inputs, and effects.
 - [Feed guide](plugins/komova/skills/komova-work/references/feed.md): Entries, Reminders, and sources.
+- [MCP clients](plugins/komova/skills/komova-work/references/clients.md): OAuth and setup for Codex, Claude Code, OpenCode, Hermes, OpenClaw and models hosted by those clients.
 - [Getting started](plugins/komova/skills/komova-work/references/guides/getting-started.md): MCP connection, identifiers, and query scopes.
 - [Items and Entries](plugins/komova/skills/komova-work/references/guides/items-and-entries.md): fields, dependencies, Forms, and app behavior.
 - [Feedback and handoffs](plugins/komova/skills/komova-work/references/guides/feedback-and-handoffs.md): feedback versions, human actions, and saved attachments.

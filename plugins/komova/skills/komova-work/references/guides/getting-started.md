@@ -1,5 +1,7 @@
 # Komova MCP resources
 
+Connect an OAuth-capable MCP client to `https://api.komova.app/mcp`. Discovery advertises PKCE S256, curated client metadata (ChatGPT, Claude hosted chat, Codex and Hermes) and public Dynamic Client Registration for standards-compatible clients such as Claude Code, OpenCode and OpenClaw. Sign in and review Komova's consent before granting read or write access; write access includes deletion. Registered client names are self-declared. DeepSeek used within one of these applications is its model provider, not a separate verified MCP client. Refresh and revocation preserve the granted tool scopes; the current mobile app may display a generic MCP label for a new client while still revoking its exact connection. Protocol support does not establish that every vendor's real login has been tested.
+
 The canonical URL for connecting Komova as a remote MCP server is `https://api.komova.app/mcp`. Each client must authorize its own connection; this resource contains no credentials.
 
 The Komova plugin bundles the `komova-work` skill with the MCP connection. It also bundles the product guides and reference documentation for Komova capabilities, MCP tools and mobile views. Connecting the raw MCP URL does not install the skill or grant access: the client still needs authorization. The skill is not required to use these guides or tools.

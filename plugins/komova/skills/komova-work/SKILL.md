@@ -22,6 +22,7 @@ Read only the references needed for the task. They are packaged locally and requ
 - [App model](references/app-model.md): record types, List and Feed behavior, Forms, ownership, and read state.
 - [Tool catalog](references/tools.md): supported calls, inputs, validation, and effects.
 - [Feed writing](references/feed.md): Entries, immediate Reminders, and structured sources.
+- [MCP clients](references/clients.md): client configuration, OAuth registration, and connection checks.
 - [Getting started](references/guides/getting-started.md): connection, entities, identifiers, and query scopes.
 - [Items and Entries](references/guides/items-and-entries.md): fields, dependencies, work indicators, Forms, and app presentation.
 - [Feedback and handoffs](references/guides/feedback-and-handoffs.md): feedback versions, human actions, and saved evidence.
